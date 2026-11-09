@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onda — Audio in. Timed captions out.</title>
+    <meta name="description" content="Onda turns any audio file into a clean, timestamped transcript in seconds. Drop in a recording, read along with playback, and export SRT, VTT or TXT.">
+    <meta name="theme-color" content="#F3EFE6">
+    <meta property="og:title" content="Onda — Audio in. Timed captions out.">
+    <meta property="og:description" content="A small studio for turning recordings into captions that keep time.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script>document.documentElement.classList.replace('no-js', 'js');</script>
+    <script src="/app.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="0" height="0">
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4.5 12h14M13 6.5l5.5 5.5-5.5 5.5"/></symbol>
+        <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19.5v-15M6.5 10L12 4.5 17.5 10"/></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M8.5 5.6v12.8L19 12z" fill="currentColor" stroke="none"/></symbol>
+        <symbol id="i-pause" viewBox="0 0 24 24"><rect x="7.5" y="5.5" width="3.4" height="13" rx="1.1" fill="currentColor" stroke="none"/><rect x="13.1" y="5.5" width="3.4" height="13" rx="1.1" fill="currentColor" stroke="none"/></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 2"/></symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3.5 5 6.4v5.2c0 4.3 2.9 7.4 7 8.9 4.1-1.5 7-4.6 7-8.9V6.4z"/><path d="m9.4 12.2 1.8 1.8 3.6-3.8"/></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5"/><path d="M4.5 16.5v2.2a1.3 1.3 0 0 0 1.3 1.3h12.4a1.3 1.3 0 0 0 1.3-1.3v-2.2"/></symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3.8 8 4.4-8 4.4-8-4.4z"/><path d="m4 12.4 8 4.4 8-4.4"/><path d="m4 16.6 8 4.4 8-4.4"/></symbol>
+        <symbol id="i-command" viewBox="0 0 24 24"><path d="M9 8.5V6.7a2.7 2.7 0 1 0-2.7 2.7H15a2.7 2.7 0 1 1-2.7 2.7v3.2a2.7 2.7 0 1 1-2.7-2.7h5.9"/></symbol>
+        <symbol id="i-cpu" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2"/><path d="M10 3.5v3.5M14 3.5v3.5M10 17v3.5M14 17v3.5M3.5 10H7M3.5 14H7M17 10h3.5M17 14h3.5"/></symbol>
+        <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5v-2a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/></symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.8 6.8h14.4M9.5 6.8V5.3a1.3 1.3 0 0 1 1.3-1.3h2.4a1.3 1.3 0 0 1 1.3 1.3v1.5M7.2 6.8l.8 12a1.6 1.6 0 0 0 1.6 1.5h4.8a1.6 1.6 0 0 0 1.6-1.5l.8-12"/></symbol>
+        <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3.5 12h2M8 7.5v9M12 4.5v15M16 9v6M20.5 12h-2"/></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.8 4.4 4.4L19 7"/></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8.5h16M4 15.5h16"/></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6.5 9.5 5.5 5.5 5.5-5.5"/></symbol>
+        <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4.5M7.5 9 12 4.5 16.5 9"/><path d="M4.5 16.5v2.2a1.3 1.3 0 0 0 1.3 1.3h12.4a1.3 1.3 0 0 0 1.3-1.3v-2.2"/></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3.8h7.4L19 9.4v10.8H6z"/><path d="M13.2 3.8v5.8H19"/></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.7 12h16.6M12 3.5c2.3 2.4 3.4 5.3 3.4 8.5S14.3 18.1 12 20.5c-2.3-2.4-3.4-5.3-3.4-8.5S9.7 5.9 12 3.5z"/></symbol>
+    </svg>
+
+    <header class="site-header" id="siteHeader">
+        <div class="wrap nav-wrap">
+            <a class="brand" href="#top" aria-label="Onda, back to top">
+                <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                <span class="brand-word">onda</span>
+            </a>
+
+            <nav class="nav-links" aria-label="Primary">
+                <a href="#studio">Studio</a>
+                <a href="#process">Process</a>
+                <a href="#features">Details</a>
+                <a href="#faq">FAQ</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a class="btn btn--primary btn--small nav-cta" href="#studio">
+                    Open studio
+                    <span class="btn-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                </a>
+                <button class="menu-toggle" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navPanel">
+                    <svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="nav-panel" id="navPanel" aria-hidden="true">
+        <div class="wrap nav-panel-inner">
+            <div class="nav-panel-head">
+                <span class="brand brand--panel" aria-hidden="true">
+                    <span class="brand-mark"><i></i><i></i><i></i><i></i><i></i></span>
+                    <span class="brand-word">onda</span>
+                </span>
+                <button class="menu-toggle menu-toggle--close" id="menuClose" type="button" aria-label="Close menu">
+                    <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+                </button>
+            </div>
+            <nav class="nav-panel-links" aria-label="Mobile">
+                <a href="#studio"><span>01</span>Studio</a>
+                <a href="#process"><span>02</span>Process</a>
+                <a href="#features"><span>03</span>Details</a>
+                <a href="#faq"><span>04</span>FAQ</a>
+            </nav>
+            <div class="nav-panel-foot">
+                <a class="btn btn--primary" href="#studio">
+                    Open the studio
+                    <span class="btn-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                </a>
+                <p>Audio in. Timed captions out. No account required.</p>
+            </div>
+        </div>
+    </div>
+
+    <main id="main">
+        <section class="hero" id="top">
+            <div class="hero-wash" aria-hidden="true"></div>
+            <div class="wrap hero-grid">
+                <div class="hero-copy">
+                    <p class="eyebrow eyebrow--hero">
+                        <span class="pulse-dot" aria-hidden="true"></span>
+                        Whisper large-v3 · timestamped transcripts
+                    </p>
+                    <h1>Every word,<br><em>on cue.</em></h1>
+                    <p class="hero-sub">Drop in a voice note, interview or podcast. Onda returns a clean, timed script — ready to caption, subtitle or publish.</p>
+                    <div class="hero-actions">
+                        <a class="btn btn--primary" href="#studio">
+                            Open the studio
+                            <span class="btn-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                        </a>
+                        <a class="btn btn--quiet" href="#process">
+                            <span class="play-disc" aria-hidden="true"><svg class="icon" aria-hidden="true"><use href="#i-play"/></svg></span>
+                            See how it works
+                        </a>
+                    </div>
+                    <ul class="hero-facts" aria-label="Studio facts">
+                        <li>MP3 · WAV · M4A · FLAC</li>
+                        <li>25 MB per file</li>
+                        <li>No account</li>
+                    </ul>
+                </div>
+
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="hero-sheet">
+                        <span class="sheet-label">01 / TIMED TRANSCRIPT</span>
+                        <span class="sheet-rule"></span>
+                        <span class="sheet-rule"></span>
+                        <span class="sheet-rule"></span>
+                    </div>
+                    <div class="hero-console">
+                        <div class="console-head">
+                            <span class="console-kicker">ONDA / SESSION 04</span>
+                            <span class="console-live"><i></i>TAKE 04</span>
+                        </div>
+                        <div class="console-wave">
+                            <div class="wave-bars" id="heroBars"></div>
+                            <span class="console-playhead" id="heroPlayhead"></span>
+                        </div>
+                        <div class="console-times"><span>00:00</span><span>00:42</span></div>
+                        <ol class="console-lines" id="heroLines">
+                            <li class="is-active"><span class="console-stamp">00:02</span><span class="console-text">Field notes, recorded on the walk home.</span></li>
+                            <li><span class="console-stamp">00:08</span><span class="console-text">The city wakes up before the coffee does.</span></li>
+                            <li><span class="console-stamp">00:16</span><span class="console-text">Keep the pause — it’s part of the sentence.</span></li>
+                        </ol>
+                        <div class="console-foot">
+                            <span>3 segments · EN</span>
+                            <span>whisper-large-v3</span>
+                        </div>
+                    </div>
+                    <div class="hero-chip hero-chip--time">
+                        <span class="chip-dot"></span>
+                        00:12.480
+                    </div>
+                    <div class="hero-chip hero-chip--export">
+                        <span class="file-dot">SRT</span>
+                        Ready to export
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="ticker" aria-label="Studio capabilities">
+            <div class="ticker-track">
+                <ul class="ticker-list">
+                    <li>Segment-level timestamps</li>
+                    <li>Memory-only processing</li>
+                    <li>SRT · VTT · TXT</li>
+                    <li>Whisper large-v3</li>
+                    <li>Automatic language detection</li>
+                    <li>25 MB per file</li>
+                    <li>No account needed</li>
+                </ul>
+                <ul class="ticker-list" aria-hidden="true">
+                    <li>Segment-level timestamps</li>
+                    <li>Memory-only processing</li>
+                    <li>SRT · VTT · TXT</li>
+                    <li>Whisper large-v3</li>
+                    <li>Automatic language detection</li>
+                    <li>25 MB per file</li>
+                    <li>No account needed</li>
+                </ul>
+            </div>
+        </div>
+
+        <section class="studio-section" id="studio">
+            <div class="wrap">
+                <div class="studio-panel" id="studioPanel" data-state="empty">
+                    <div class="studio-ambient" aria-hidden="true"></div>
+                    <div class="studio-head">
+                        <div>
+                            <p class="eyebrow eyebrow--dark"><span>01</span> The studio</p>
+                            <h2>Drop a file.<br>Get a script.</h2>
+                        </div>
+                        <p class="studio-intro">Upload, listen, export. Everything happens in memory — your audio never touches the disk.</p>
+                    </div>
+
+                    <div class="studio-body">
+                        <div class="studio-state" data-panel="empty">
+                            <label class="dropzone" id="dropzone" for="audioInput">
+                                <span class="dropzone-icon" aria-hidden="true">
+                                    <span class="mini-bars"><i></i><i></i><i></i><i></i><i></i></span>
+                                </span>
+                                <span class="dropzone-title">Drop your audio here</span>
+                                <span class="dropzone-sub">or <span class="link-underline">browse files</span></span>
+                                <input class="visually-hidden" type="file" id="audioInput" accept="audio/*,.mp3,.wav,.m4a,.flac,.ogg,.oga,.webm,.aac,.aiff">
+                                <span class="dropzone-formats">MP3 · WAV · M4A · FLAC · OGG · WEBM</span>
+                            </label>
+                            <p class="form-error" id="fileError" role="alert" hidden></p>
+                            <ul class="studio-meta">
+                                <li><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Segment-level timing</li>
+                                <li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>No storage, no account</li>
+                                <li><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>SRT, VTT &amp; TXT</li>
+                            </ul>
+                        </div>
+
+                        <div class="studio-state" data-panel="ready" hidden>
+                            <div class="audio-file">
+                                <span class="file-badge" aria-hidden="true"><svg class="icon"><use href="#i-wave"/></svg></span>
+                                <span class="file-info">
+                                    <span class="file-name" id="fileName">recording.mp3</span>
+                                    <span class="file-meta"><span id="fileSize">0 MB</span><span aria-hidden="true">·</span><span id="fileDuration">0:00</span><span aria-hidden="true">·</span><span class="file-ready">Ready</span></span>
+                                </span>
+                                <button class="icon-btn" id="removeFile" type="button" aria-label="Remove selected file">
+                                    <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+                                </button>
+                            </div>
+
+                            <div class="wave-preview">
+                                <canvas id="previewWave" aria-hidden="true"></canvas>
+                                <p class="wave-fallback" id="previewFallback" hidden>Waveform preview unavailable — you can still transcribe.</p>
+                            </div>
+
+                            <div class="ready-controls">
+                                <div class="field">
+                                    <label for="language">Spoken language</label>
+                                    <div class="select-wrap">
+                                        <svg class="icon select-icon" aria-hidden="true"><use href="#i-globe"/></svg>
+                                        <select id="language">
+                                            <option value="auto" selected>Auto-detect</option>
+                                            <option value="en">English</option>
+                                            <option value="hi">Hindi</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                            <option value="pt">Portuguese</option>
+                                            <option value="it">Italian</option>
+                                            <option value="ja">Japanese</option>
+                                            <option value="ko">Korean</option>
+                                            <option value="zh">Chinese</option>
+                                            <option value="ar">Arabic</option>
+                                            <option value="ru">Russian</option>
+                                            <option value="id">Indonesian</option>
+                                            <option value="tr">Turkish</option>
+                                            <option value="nl">Dutch</option>
+                                            <option value="pl">Polish</option>
+                                        </select>
+                                        <svg class="icon select-chevron" aria-hidden="true"><use href="#i-chevron"/></svg>
+                                    </div>
+                                </div>
+                                <button class="btn btn--cream" id="generateBtn" type="button">
+                                    Generate captions
+                                    <span class="btn-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                                </button>
+                            </div>
+                            <p class="studio-note"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>In-memory processing. Your recording is discarded when the request ends.</p>
+                        </div>
+
+                        <div class="studio-state" data-panel="loading" hidden>
+                            <div class="loading-card">
+                                <div class="loading-head">
+                                    <span class="spinner" aria-hidden="true"></span>
+                                    <span class="loading-copy">
+                                        <span class="loading-title" id="loadingTitle">Uploading your recording</span>
+                                        <span class="loading-hint" id="loadingHint">Sending the file to the studio.</span>
+                                    </span>
+                                    <span class="loading-time" id="loadingTime">0:00</span>
+                                </div>
+                                <div class="progress-track" aria-hidden="true"><span class="progress-fill" id="progressFill"></span></div>
+                                <div class="loading-foot">
+                                    <span class="loading-file" id="loadingFileName">recording.mp3</span>
+                                    <button class="btn btn--ghost btn--small" id="cancelBtn" type="button">Cancel</button>
+                                </div>
+                            </div>
+                            <p class="studio-note studio-note--center">Keep this tab open. Longer recordings take a little more time to align.</p>
+                        </div>
+
+                        <div class="studio-state" data-panel="result" hidden>
+                            <div class="result-head">
+                                <div class="result-heading">
+                                    <p class="eyebrow eyebrow--dark">Transcript ready</p>
+                                    <h3 id="resultTitle" tabindex="-1">Your captions, on the line.</h3>
+                                </div>
+                                <div class="result-actions">
+                                    <button class="btn btn--ghost btn--small" id="copyAllBtn" type="button">
+                                        <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+                                        Copy all
+                                    </button>
+                                    <div class="menu">
+                                        <button class="btn btn--cream btn--small" id="exportBtn" type="button" aria-expanded="false" aria-haspopup="menu" aria-controls="exportMenu">
+                                            Export
+                                            <svg class="icon" aria-hidden="true"><use href="#i-chevron"/></svg>
+                                        </button>
+                                        <div class="menu-list" id="exportMenu" role="menu" hidden>
+                                            <button type="button" role="menuitem" data-export="srt"><span>SubRip</span><code>.srt</code></button>
+                                            <button type="button" role="menuitem" data-export="vtt"><span>WebVTT</span><code>.vtt</code></button>
+                                            <button type="button" role="menuitem" data-export="txt"><span>Plain text</span><code>.txt</code></button>
+                                        </div>
+                                    </div>
+                                    <button class="icon-btn icon-btn--light" id="newFileBtn" type="button" aria-label="Start a new transcript">
+                                        <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="result-file"><span class="status-dot" aria-hidden="true"></span><span id="resultFileName">recording.mp3</span></p>
+
+                            <div class="result-grid">
+                                <div class="player">
+                                    <div class="player-top">
+                                        <span class="player-label">Playback</span>
+                                        <label class="speed-field">
+                                            <span class="visually-hidden">Playback speed</span>
+                                            <select id="speed">
+                                                <option value="0.75">0.75×</option>
+                                                <option value="1" selected>1×</option>
+                                                <option value="1.25">1.25×</option>
+                                                <option value="1.5">1.5×</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <div class="seek" id="seek" role="slider" tabindex="0" aria-label="Seek through the recording" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0:00">
+                                        <canvas id="playerWave"></canvas>
+                                        <span class="seek-hint">Click to seek</span>
+                                    </div>
+                                    <div class="player-controls">
+                                        <button class="play-btn" id="playBtn" type="button" aria-label="Play recording" aria-pressed="false">
+                                            <svg class="icon play-icon" aria-hidden="true"><use href="#i-play"/></svg>
+                                            <svg class="icon pause-icon" aria-hidden="true" hidden><use href="#i-pause"/></svg>
+                                        </button>
+                                        <span class="player-time"><span id="currentTime">0:00</span><span class="time-sep" aria-hidden="true">/</span><span id="totalTime">0:00</span></span>
+                                        <span class="player-badge" id="languageBadge">EN</span>
+                                    </div>
+                                    <dl class="player-stats">
+                                        <div><dt>Segments</dt><dd id="segCount">0</dd></div>
+                                        <div><dt>Words</dt><dd id="wordCount">0</dd></div>
+                                        <div><dt>Model</dt><dd>Whisper</dd></div>
+                                    </dl>
+                                    <p class="player-hint"><kbd>Space</kbd> play <span aria-hidden="true">·</span> <kbd>←</kbd><kbd>→</kbd> seek</p>
+                                </div>
+
+                                <div class="transcript">
+                                    <ol class="transcript-list" id="transcriptList"></ol>
+                                </div>
+                            </div>
+                            <p class="result-note"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg>Transcripts are generated by AI — check names, numbers and technical terms before publishing.</p>
+                            <audio id="audioPlayer" preload="metadata"></audio>
+                        </div>
+
+                        <div class="studio-state" data-panel="error" hidden>
+                            <div class="error-card" role="alert">
+                                <span class="error-badge" aria-hidden="true">!</span>
+                                <h3>That one didn’t land.</h3>
+                                <p id="errorMessage">Something interrupted the transcription.</p>
+                                <div class="error-actions">
+                                    <button class="btn btn--cream btn--small" id="retryBtn" type="button">Try again</button>
+                                    <button class="btn btn--ghost btn--small" id="errorNewFile" type="button">Choose another file</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="visually-hidden" id="studioStatus" role="status" aria-live="polite"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="process" id="process">
+            <div class="wrap">
+                <div class="process-grid">
+                    <div class="process-intro">
+                        <p class="eyebrow"><span>02</span> The process</p>
+                        <h2>Three moves from audio to text.</h2>
+                        <p class="section-sub">A deliberately short path. No project setup, no timeline to learn, no account to create.</p>
+                        <div class="process-note">
+                            <span class="process-note-line" aria-hidden="true"></span>
+                            <p>Built for people who listen closely.</p>
+                        </div>
+                    </div>
+
+                    <ol class="steps">
+                        <li class="step reveal">
+                            <span class="step-number">01</span>
+                            <div class="step-body">
+                                <h3>Drop it in</h3>
+                                <p>Choose a recording from your device or drag it onto the desk. MP3, WAV, M4A, FLAC, OGG and WEBM all walk in.</p>
+                                <span class="step-tag">MP3 / WAV / M4A / FLAC</span>
+                            </div>
+                            <span class="step-art" aria-hidden="true">
+                                <span class="art-file"><svg class="icon"><use href="#i-wave"/></svg><i></i></span>
+                            </span>
+                        </li>
+                        <li class="step reveal">
+                            <span class="step-number">02</span>
+                            <div class="step-body">
+                                <h3>Let it listen</h3>
+                                <p>Whisper large-v3 transcribes the audio and aligns each line to a start and end time. Language detection is on by default.</p>
+                                <span class="step-tag">WHISPER LARGE-V3</span>
+                            </div>
+                            <span class="step-art" aria-hidden="true">
+                                <span class="art-wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
+                            </span>
+                        </li>
+                        <li class="step reveal">
+                            <span class="step-number">03</span>
+                            <div class="step-body">
+                                <h3>Take it with you</h3>
+                                <p>Read along with playback, copy a single line, or export the whole set as SRT, VTT or TXT. Nothing stays locked in.</p>
+                                <span class="step-tag">SRT / VTT / TXT</span>
+                            </div>
+                            <span class="step-art" aria-hidden="true">
+                                <span class="art-export">SRT</span>
+                                <span class="art-export">VTT</span>
+                            </span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="wrap">
+                <div class="features-head">
+                    <div>
+                        <p class="eyebrow"><span>03</span> The details</p>
+                        <h2>Built for the way recordings actually behave.</h2>
+                    </div>
+                    <p class="section-sub">Not a demo. A small, precise tool, with attention where it counts.</p>
+                </div>
+
+                <div class="bento">
+                    <article class="card card--timing reveal">
+                        <span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-clock"/></svg></span>
+                        <h3>Time, not approximation.</h3>
+                        <p>Every line carries a start and an end. Tap a timestamp to jump straight to that moment in the audio.</p>
+                        <div class="mini-timeline" aria-hidden="true">
+                            <div class="mini-track is-live"><span class="mini-stamp">00:02</span><span class="mini-text">Field notes, recorded on the walk home.</span></div>
+                            <div class="mini-track"><span class="mini-stamp">00:08</span><span class="mini-text">The city wakes up before the coffee does.</span></div>
+                            <div class="mini-track"><span class="mini-stamp">00:16</span><span class="mini-text">Keep the pause — it’s part of the sentence.</span></div>
+                        </div>
+                    </article>
+
+                    <article class="card card--privacy reveal">
+                        <span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-shield"/></svg></span>
+                        <h3>Private by default.</h3>
+                        <p>Audio is held in memory for one request. No disk writes, no transcript archive, no account.</p>
+                        <div class="privacy-badge" aria-hidden="true"><span></span> Memory only</div>
+                    </article>
+
+                    <article class="card card--exports reveal">
+                        <span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-download"/></svg></span>
+                        <h3>Exports that travel.</h3>
+                        <p>SRT for editors, VTT for the web, TXT for everything else.</p>
+                        <div class="export-stack" aria-hidden="true">
+                            <span class="export-tile">SRT</span>
+                            <span class="export-tile">VTT</span>
+                            <span class="export-tile">TXT</span>
+                        </div>
+                    </article>
+
+                    <article class="card card--formats reveal">
+                        <span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-layers"/></svg></span>
+                        <h3>Whatever you recorded.</h3>
+                        <p>Six common formats, no conversion step before you start.</p>
+                        <div class="format-chips" aria-label="Supported formats">
+                            <span>MP3</span><span>WAV</span><span>M4A</span><span>FLAC</span><span>OGG</span><span>WEBM</span>
+                        </div>
+                    </article>
+
+                    <article class="card card--keys reveal">
+                        <span class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-command"/></svg></span>
+                        <h3>Keys, not clicks.</h3>
+                        <p>Space to play, arrows to scrub. The studio works without a mouse.</p>
+                        <div class="keycaps" aria-hidden="true"><kbd>Space</kbd><kbd>←</kbd><kbd>→</kbd></div>
+                    </article>
+
+                    <article class="card card--model reveal">
+                        <div class="model-copy">
+                            <p class="eyebrow eyebrow--dark">Under the hood</p>
+                            <h3 class="model-title">Whisper <em>large-v3</em></h3>
+                            <p>A strong open speech model, transcribed through Groq’s API for speed. Segment timestamps and automatic language detection come standard.</p>
+                        </div>
+                        <dl class="model-specs">
+                            <div><dt>Model</dt><dd>whisper-large-v3</dd></div>
+                            <div><dt>Timing</dt><dd>Segment-level</dd></div>
+                            <div><dt>Limit</dt><dd>25 MB / file</dd></div>
+                            <div><dt>Storage</dt><dd>None</dd></div>
+                        </dl>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="manifesto" aria-labelledby="manifestoTitle">
+            <div class="wrap manifesto-inner">
+                <p class="eyebrow eyebrow--dark">The point</p>
+                <h2 id="manifestoTitle">A transcript is the words.<br>A caption is <em>the timing.</em></h2>
+                <p class="manifesto-sub">Onda hands you both in one pass — the words, and the moment each one arrives.</p>
+                <a class="btn btn--ink" href="#studio">
+                    Make your first set
+                    <span class="btn-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                </a>
+            </div>
+            <div class="manifesto-wave" aria-hidden="true">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+        </section>
+
+        <section class="faq" id="faq">
+            <div class="wrap">
+                <div class="faq-grid">
+                    <div class="faq-intro">
+                        <p class="eyebrow"><span>04</span> Questions</p>
+                        <h2>The short answers.</h2>
+                        <p class="section-sub">Everything the studio does — and doesn’t — in plain language.</p>
+                    </div>
+                    <div class="faq-list">
+                        <details class="faq-item" name="onda-faq">
+                            <summary><span>What can I upload?</span><span class="faq-plus" aria-hidden="true"></span></summary>
+                            <div class="faq-answer"><p>MP3, WAV, M4A, FLAC, OGG and WEBM, up to 25 MB per file. Most voice-note apps and recorders output one of these already, so there is no conversion step.</p></div>
+                        </details>
+                        <details class="faq-item" name="onda-faq">
+                            <summary><span>Where does my audio go?</span><span class="faq-plus" aria-hidden="true"></span></summary>
+                            <div class="faq-answer"><p>The studio holds your file in memory and sends it to Groq’s Whisper API for transcription. It is not written to disk, added to a library, or kept after the request finishes. There is no account attached to it.</p></div>
+                        </details>
+                        <details class="faq-item" name="onda-faq">
+                            <summary><span>How precise is the timing?</span><span class="faq-plus" aria-hidden="true"></span></summary>
+                            <div class="faq-answer"><p>Each segment gets a start and end time in seconds. Accuracy follows the audio: clean speech with clear pauses aligns tightly, while music, crosstalk and heavy background noise are harder for any model.</p></div>
+                        </details>
+                        <details class="faq-item" name="onda-faq">
+                            <summary><span>Which languages are supported?</span><span class="faq-plus" aria-hidden="true"></span></summary>
+                            <div class="faq-answer"><p>Automatic detection is the default, with manual overrides for English, Hindi, Spanish, French, German, Portuguese, Italian, Japanese, Korean, Chinese, Arabic, Russian, Indonesian, Turkish, Dutch and Polish. Whisper handles many more beyond that list.</p></div>
+                        </details>
+                        <details class="faq-item" name="onda-faq">
+                            <summary><span>Can I edit the captions?</span><span class="faq-plus" aria-hidden="true"></span></summary>
+                            <div class="faq-answer"><p>The studio gives you copyable lines and clean exports. For wording changes, take the SRT or VTT into your editor — every timestamp stays intact.</p></div>
+                        </details>
+                        <details class="faq-item" name="onda-faq">
+                            <summary><span>Do I need an account?</span><span class="faq-plus" aria-hidden="true"></span></summary>
+                            <div class="faq-answer"><p>No. Open the studio, drop a file, export. The only limit is the 25 MB ceiling per recording.</p></div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="closing">
+            <div class="wrap closing-inner">
+                <p class="eyebrow"><span>05</span> Ready when you are</p>
+                <h2>Your next recording<br>already has a script.</h2>
+                <p class="section-sub">It’s sitting in the audio, waiting to be lifted out.</p>
+                <a class="btn btn--primary" href="#studio">
+                    Open the studio
+                    <span class="btn-icon"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+                </a>
+                <p class="closing-note">MP3 · WAV · M4A · FLAC · 25 MB · No account</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a class="brand brand--footer" href="#top" aria-label="Onda, back to top">
+                        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                        <span class="brand-word">onda</span>
+                    </a>
+                    <p>Audio in. Timed captions out.<br>A small studio for people who listen closely.</p>
+                </div>
+                <nav class="footer-col" aria-label="Footer">
+                    <h3>Studio</h3>
+                    <a href="#studio">Open studio</a>
+                    <a href="#process">How it works</a>
+                    <a href="#features">Details</a>
+                    <a href="#faq">FAQ</a>
+                </nav>
+                <div class="footer-col">
+                    <h3>Formats</h3>
+                    <span>MP3</span><span>WAV</span><span>M4A</span><span>FLAC</span><span>OGG</span><span>WEBM</span>
+                </div>
+                <div class="footer-col">
+                    <h3>Exports</h3>
+                    <span>SubRip (.srt)</span><span>WebVTT (.vtt)</span><span>Plain text (.txt)</span>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© <span id="year">2026</span> Onda Studio</p>
+                <p class="footer-privacy"><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg>Audio processed in memory.</p>
+                <a class="back-top" href="#top">Back to top <svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg></a>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true" hidden>
+        <span class="toast-icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span>
+        <span id="toastText">Copied</span>
+    </div>
+</body>
+</html>
